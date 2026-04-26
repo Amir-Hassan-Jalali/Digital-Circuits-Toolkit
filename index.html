@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Universal Base Converter</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #818cf8;
+            --accent-hover: #6366f1;
+            --border: #334155;
+            --input-bg: #0f172a;
+            --error: #f87171;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            padding-top: max(16px, env(safe-area-inset-top));
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 480px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        p.subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .converter-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        label {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            background-color: var(--input-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+        }
+
+        input.invalid {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        select {
+            background-color: var(--input-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 0 10px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            cursor: pointer;
+            min-width: 80px;
+            transition: border-color 0.2s;
+            /* CHANGED: Font weight is now normal (400) instead of bold */
+            font-weight: 400;
+        }
+
+        select:focus {
+            border-color: var(--accent);
+        }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+            padding-right: 24px;
+        }
+
+        /* Ensure dropdown options also look clean */
+        select option {
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            padding: 10px;
+            font-weight: 400;
+        }
+
+        .swap-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: -5px 0;
+            z-index: 10;
+        }
+
+        .swap-btn {
+            background-color: var(--border);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .swap-btn:hover {
+            background-color: var(--accent);
+            transform: rotate(180deg);
+        }
+
+        .swap-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .output-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .output-field {
+            background-color: rgba(129, 140, 248, 0.05);
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .copy-indicator {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.7rem;
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        @media (hover: hover) {
+            .output-wrapper:hover .copy-indicator {
+                opacity: 1;
+            }
+        }
+
+        .info-text {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background-color: var(--text-primary);
+            color: var(--bg-color);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 1.35rem;
+            }
+
+            .converter-grid {
+                gap: 1rem;
+            }
+
+            .swap-btn {
+                width: 36px;
+                height: 36px;
+            }
+
+            input {
+                font-size: 1rem;
+                padding: 10px;
+            }
+
+            select {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 2.5rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Universal Base Converter</h1>
+            <p class="subtitle">Base 2 to 36 • Responsive</p>
+        </header>
+
+        <div class="converter-grid">
+
+            <!-- Input Section -->
+            <div class="input-group">
+                <label>
+                    <span>Input</span>
+                    <span id="inputBaseDisplay">Base 10</span>
+                </label>
+                <div class="input-wrapper">
+                    <input type="text" id="inputValue" placeholder="0" autocomplete="off">
+                    <select id="inputBase">
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Swap Button -->
+            <div class="swap-container">
+                <button class="swap-btn" id="swapBtn" title="Swap Input and Output">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Output Section -->
+            <div class="input-group">
+                <label>
+                    <span>Output</span>
+                    <span id="outputBaseDisplay">Base 2</span>
+                </label>
+                <div class="input-wrapper">
+                    <div class="output-wrapper">
+                        <input type="text" id="outputValue" class="output-field" readonly placeholder="0">
+                        <span class="copy-indicator">Copy</span>
+                    </div>
+                    <select id="outputBase">
+                        <!-- Options populated by JS -->
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="info-text">
+            Supports characters 0-9 and A-Z.<br>Tap output to copy.
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Copied to clipboard!</div>
+
+    <script>
+        const inputVal = document.getElementById('inputValue');
+        const inputBase = document.getElementById('inputBase');
+        const outputVal = document.getElementById('outputValue');
+        const outputBase = document.getElementById('outputBase');
+        const swapBtn = document.getElementById('swapBtn');
+        const inputBaseDisplay = document.getElementById('inputBaseDisplay');
+        const outputBaseDisplay = document.getElementById('outputBaseDisplay');
+
+        function populateBases() {
+            for (let i = 2; i <= 36; i++) {
+                const opt1 = new Option(`Base ${i}`, i);
+                const opt2 = new Option(`Base ${i}`, i);
+                inputBase.add(opt1);
+                outputBase.add(opt2);
+            }
+            inputBase.value = "10";
+            outputBase.value = "2";
+        }
+
+        function getValidCharsRegex(base) {
+            const limit = Math.min(base, 36);
+            let chars = "0123456789";
+            if (limit > 10) {
+                chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            }
+            const escaped = chars.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            return new RegExp(`^[${escaped}]+$`);
+        }
+
+        function convert() {
+            const val = inputVal.value.trim().toUpperCase();
+            const baseIn = parseInt(inputBase.value);
+            const baseOut = parseInt(outputBase.value);
+
+            inputBaseDisplay.textContent = `Base ${baseIn}`;
+            outputBaseDisplay.textContent = `Base ${baseOut}`;
+
+            if (val === "") {
+                outputVal.value = "";
+                inputVal.classList.remove('invalid');
+                return;
+            }
+
+            const validRegex = getValidCharsRegex(baseIn);
+
+            if (!validRegex.test(val)) {
+                inputVal.classList.add('invalid');
+                return;
+            } else {
+                inputVal.classList.remove('invalid');
+            }
+
+            try {
+                const decimalValue = parseInt(val, baseIn);
+
+                if (isNaN(decimalValue)) {
+                    throw new Error("Invalid number");
+                }
+
+                let result = decimalValue.toString(baseOut);
+                if (result === "-0") result = "0";
+
+                outputVal.value = result;
+
+            } catch (e) {
+                console.error("Conversion error:", e);
+                outputVal.value = "Error";
+            }
+        }
+
+        swapBtn.addEventListener('click', () => {
+            const currentOutput = outputVal.value;
+            if (currentOutput && currentOutput !== "Error" && currentOutput !== "") {
+                inputVal.value = currentOutput;
+                const tempBase = inputBase.value;
+                inputBase.value = outputBase.value;
+                outputBase.value = tempBase;
+                convert();
+            }
+        });
+
+        inputVal.addEventListener('input', convert);
+        inputBase.addEventListener('change', convert);
+        outputBase.addEventListener('change', convert);
+
+        outputVal.addEventListener('click', () => {
+            if (outputVal.value && outputVal.value !== "Error") {
+                navigator.clipboard.writeText(outputVal.value).then(() => {
+                    showToast();
+                });
+            }
+        });
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        populateBases();
+    </script>
+</body>
+
+</html>
