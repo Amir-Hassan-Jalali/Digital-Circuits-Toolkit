@@ -3,20 +3,28 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Universal Base Converter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Circuits Lab</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
+            --bg-color: #090b10;
+            --panel: #11151d;
+            --panel-strong: #151b26;
+            --field: #090d14;
+            --field-raised: #0e1420;
             --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent: #818cf8;
-            --accent-hover: #6366f1;
-            --border: #334155;
-            --input-bg: #0f172a;
-            --error: #f87171;
-            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            --text-secondary: #9aa7b8;
+            --text-muted: #687589;
+            --accent: #19c6b3;
+            --accent-hover: #5eead4;
+            --accent-soft: rgba(25, 198, 179, 0.13);
+            --amber: #f5b84b;
+            --amber-soft: rgba(245, 184, 75, 0.13);
+            --coral: #f07167;
+            --coral-soft: rgba(240, 113, 103, 0.13);
+            --border: rgba(148, 163, 184, 0.18);
+            --border-strong: rgba(148, 163, 184, 0.28);
+            --shadow: 0 32px 96px rgba(0, 0, 0, 0.52);
         }
 
         * {
@@ -27,441 +35,530 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background:
+                radial-gradient(ellipse 75% 55% at 10% 5%, rgba(25, 198, 179, 0.11), transparent),
+                radial-gradient(ellipse 60% 45% at 90% 95%, rgba(240, 113, 103, 0.10), transparent),
+                var(--bg-color);
             color: var(--text-primary);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: Inter, 'Segoe UI', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 16px;
-            padding-top: max(16px, env(safe-area-inset-top));
-            padding-bottom: max(16px, env(safe-area-inset-bottom));
+            padding: 24px 18px;
+            padding-top: max(24px, env(safe-area-inset-top));
+            padding-bottom: max(24px, env(safe-area-inset-bottom));
         }
 
+        /* Subtle dot grid */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(148, 163, 184, 0.065) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── CONTAINER ───────────────────────────── */
         .container {
-            background-color: var(--card-bg);
-            padding: 2rem;
-            border-radius: 24px;
+            background:
+                linear-gradient(175deg, rgba(255, 255, 255, 0.052) 0%, transparent 45%),
+                var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             box-shadow: var(--shadow);
             width: 100%;
-            max-width: 480px;
-            border: 1px solid var(--border);
-            transition: transform 0.2s ease;
+            max-width: 920px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
         }
 
-        header {
-            text-align: center;
+        /* Three-color top bar */
+        .container::before {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--amber), var(--coral));
+            z-index: 2;
+        }
+
+        /* ── HERO ────────────────────────────────── */
+        .hero {
+            padding: 2.75rem 2.5rem 2.4rem;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Circuit trace decoration */
+        .hero-deco {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 340px;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .suite-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-soft);
+            border: 1px solid rgba(94, 234, 212, 0.28);
+            border-radius: 999px;
+            padding: 5px 14px 5px 10px;
+            font-size: 0.72rem;
+            font-weight: 720;
+            color: var(--accent-hover);
+            letter-spacing: 0.025em;
             margin-bottom: 1.5rem;
+            animation: fadeUp 0.45s ease both;
         }
 
-        h1 {
-            font-weight: 700;
-            font-size: 1.5rem;
-            margin-bottom: 0.25rem;
-            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2;
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 0 3px rgba(25, 198, 179, 0.22);
+            flex-shrink: 0;
+            animation: dotPulse 2.6s ease-in-out infinite;
         }
 
-        p.subtitle {
+        @keyframes dotPulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(25, 198, 179, 0.22); }
+            50%       { box-shadow: 0 0 0 5px rgba(25, 198, 179, 0.08); }
+        }
+
+        .hero-title {
+            font-size: clamp(1.95rem, 4.8vw, 2.8rem);
+            font-weight: 820;
+            line-height: 1.1;
+            letter-spacing: -0.025em;
+            margin-bottom: 1rem;
+            animation: fadeUp 0.45s ease 0.08s both;
+        }
+
+        .hero-title .accent-line {
+            color: var(--accent);
+        }
+
+        .hero-subtitle {
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.97rem;
+            line-height: 1.67;
+            max-width: 430px;
+            animation: fadeUp 0.45s ease 0.16s both;
         }
 
-        .converter-grid {
+        /* ── TOOLS ───────────────────────────────── */
+        .tools-section {
+            padding: 1.8rem 2rem 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.1rem;
+            animation: fadeUp 0.45s ease 0.22s both;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 760;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+
+        .section-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .section-count::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.9rem;
+        }
+
+        /* ── CARD ────────────────────────────────── */
+        .tool-card {
+            background:
+                linear-gradient(155deg, rgba(255, 255, 255, 0.04) 0%, transparent 55%),
+                var(--panel-strong);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.35rem 1.3rem 1.15rem;
+            text-decoration: none;
+            color: inherit;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .input-group {
+            gap: 0.8rem;
             position: relative;
-        }
-
-        label {
-            display: flex;
-            justify-content: space-between;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .input-wrapper {
-            display: flex;
-            gap: 10px;
-        }
-
-        input {
-            flex: 1;
-            background-color: var(--input-bg);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            font-family: 'Courier New', monospace;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-
-        input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
-        }
-
-        input.invalid {
-            border-color: var(--error);
-            color: var(--error);
-        }
-
-        select {
-            background-color: var(--input-bg);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 0 10px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
+            overflow: hidden;
             cursor: pointer;
-            min-width: 80px;
-            transition: border-color 0.2s;
-            /* CHANGED: Font weight is now normal (400) instead of bold */
-            font-weight: 400;
+            transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
         }
 
-        select:focus {
-            border-color: var(--accent);
-        }
+        .tool-card:nth-child(1) { animation: fadeUp 0.45s ease 0.3s both; }
+        .tool-card:nth-child(2) { animation: fadeUp 0.45s ease 0.38s both; }
+        .tool-card:nth-child(3) { animation: fadeUp 0.45s ease 0.46s both; }
 
-        select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 16px;
-            padding-right: 24px;
-        }
-
-        /* Ensure dropdown options also look clean */
-        select option {
-            background-color: var(--input-bg);
-            color: var(--text-primary);
-            padding: 10px;
-            font-weight: 400;
-        }
-
-        .swap-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: -5px 0;
-            z-index: 10;
-        }
-
-        .swap-btn {
-            background-color: var(--border);
-            color: var(--text-primary);
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .swap-btn:hover {
-            background-color: var(--accent);
-            transform: rotate(180deg);
-        }
-
-        .swap-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .output-wrapper {
-            position: relative;
-            flex: 1;
-        }
-
-        .output-field {
-            background-color: rgba(129, 140, 248, 0.05);
-            border: 2px solid var(--accent);
-            cursor: pointer;
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        .copy-indicator {
+        /* Bottom glow line on hover */
+        .tool-card::after {
+            content: '';
             position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.7rem;
-            color: var(--accent);
+            bottom: 0; left: 10%; right: 10%;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, var(--c-raw), transparent);
             opacity: 0;
-            transition: opacity 0.2s;
-            pointer-events: none;
-            font-weight: bold;
-            text-transform: uppercase;
+            transition: opacity 0.25s ease;
         }
 
-        @media (hover: hover) {
-            .output-wrapper:hover .copy-indicator {
-                opacity: 1;
-            }
+        .tool-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--c-border);
+            box-shadow:
+                0 18px 44px rgba(0, 0, 0, 0.42),
+                0 0 0 1px var(--c-border),
+                0 0 22px var(--c-glow);
         }
 
-        .info-text {
-            text-align: center;
-            font-size: 0.7rem;
+        .tool-card:hover::after { opacity: 1; }
+
+        /* Per-card color vars */
+        .tool-card.teal {
+            --c-raw:   #19c6b3;
+            --c-soft:  var(--accent-soft);
+            --c-label: var(--accent-hover);
+            --c-border: rgba(25, 198, 179, 0.38);
+            --c-glow:   rgba(25, 198, 179, 0.09);
+        }
+
+        .tool-card.amber {
+            --c-raw:   #f5b84b;
+            --c-soft:  var(--amber-soft);
+            --c-label: #fcd47a;
+            --c-border: rgba(245, 184, 75, 0.38);
+            --c-glow:   rgba(245, 184, 75, 0.09);
+        }
+
+        .tool-card.coral {
+            --c-raw:   #f07167;
+            --c-soft:  var(--coral-soft);
+            --c-label: #f59d97;
+            --c-border: rgba(240, 113, 103, 0.38);
+            --c-glow:   rgba(240, 113, 103, 0.09);
+        }
+
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 9px;
+            background: var(--c-soft);
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--c-label);
+            flex-shrink: 0;
+            transition: border-color 0.22s, background 0.22s;
+        }
+
+        .tool-card:hover .card-icon {
+            border-color: var(--c-border);
+        }
+
+        .card-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 740;
+            color: var(--text-primary);
+            line-height: 1.25;
+        }
+
+        .card-desc {
+            font-size: 0.825rem;
             color: var(--text-secondary);
-            margin-top: 1.5rem;
-            line-height: 1.4;
+            line-height: 1.6;
+            flex: 1;
         }
 
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background-color: var(--text-primary);
-            color: var(--bg-color);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            z-index: 100;
-            white-space: nowrap;
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
         }
 
-        .toast.show {
+        .tag {
+            font-size: 0.64rem;
+            font-weight: 720;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            background: rgba(148, 163, 184, 0.07);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 4px;
+            padding: 3px 8px;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .launch-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.78rem;
+            font-weight: 730;
+            color: var(--c-label);
+            opacity: 0.6;
+            transition: opacity 0.2s, gap 0.2s;
+        }
+
+        .tool-card:hover .launch-link {
             opacity: 1;
-            transform: translateX(-50%) translateY(0);
+            gap: 9px;
         }
 
-        @media (max-width: 480px) {
-            .container {
-                padding: 1.5rem;
-                border-radius: 20px;
-            }
-
-            h1 {
-                font-size: 1.35rem;
-            }
-
-            .converter-grid {
-                gap: 1rem;
-            }
-
-            .swap-btn {
-                width: 36px;
-                height: 36px;
-            }
-
-            input {
-                font-size: 1rem;
-                padding: 10px;
-            }
-
-            select {
-                font-size: 0.9rem;
-            }
+        .launch-link svg {
+            width: 13px;
+            height: 13px;
+            transition: transform 0.2s;
         }
 
-        @media (min-width: 768px) {
-            .container {
-                padding: 2.5rem;
-            }
+        .tool-card:hover .launch-link svg {
+            transform: translateX(2px);
+        }
 
-            h1 {
-                font-size: 1.75rem;
-            }
+        /* ── FOOTER ──────────────────────────────── */
+        .site-footer {
+            border-top: 1px solid var(--border);
+            padding: 0.95rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: fadeUp 0.45s ease 0.52s both;
+        }
+
+        .footer-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.01em;
+        }
+
+        .footer-dots {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .footer-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        /* ── KEYFRAMES ───────────────────────────── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(13px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+
+        /* ── RESPONSIVE ──────────────────────────── */
+        @media (max-width: 740px) {
+            body { align-items: flex-start; padding: 16px 12px; }
+            .hero { padding: 2rem 1.25rem 1.75rem; }
+            .hero-deco { display: none; }
+            .tools-section { padding: 1.25rem; }
+            .site-footer { padding: 0.9rem 1.25rem; }
+            .tools-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+        }
+
+        @media (min-width: 741px) and (max-width: 900px) {
+            .tools-grid { grid-template-columns: 1fr 1fr; }
+            .tool-card:last-child { grid-column: 1 / -1; }
         }
     </style>
 </head>
 
 <body>
-
     <div class="container">
-        <header>
-            <h1>Universal Base Converter</h1>
-            <p class="subtitle">Base 2 to 36</p>
+
+        <!-- ── HERO ── -->
+        <header class="hero">
+            <!-- Circuit trace decoration (top-right) -->
+            <svg class="hero-deco" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- Teal node -->
+                <circle cx="255" cy="55"  r="5"  stroke="rgba(25,198,179,0.65)"  stroke-width="1.5"/>
+                <circle cx="255" cy="55"  r="13" stroke="rgba(25,198,179,0.18)"  stroke-width="1"/>
+                <!-- Amber node -->
+                <circle cx="170" cy="120" r="5"  stroke="rgba(245,184,75,0.65)"  stroke-width="1.5"/>
+                <circle cx="170" cy="120" r="13" stroke="rgba(245,184,75,0.18)"  stroke-width="1"/>
+                <!-- Coral node -->
+                <circle cx="295" cy="165" r="5"  stroke="rgba(240,113,103,0.65)" stroke-width="1.5"/>
+                <circle cx="295" cy="165" r="13" stroke="rgba(240,113,103,0.18)" stroke-width="1"/>
+
+                <!-- Traces -->
+                <path d="M268 55 L305 55 L305 152" stroke="rgba(25,198,179,0.22)"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M258 62 L258 108 L183 108 L183 120" stroke="rgba(25,198,179,0.17)"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M177 120 L235 120 L282 165" stroke="rgba(245,184,75,0.22)"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Secondary traces -->
+                <path d="M210 32 L210 76 L245 76" stroke="rgba(148,163,184,0.10)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M328 65 L328 200"         stroke="rgba(148,163,184,0.08)" stroke-width="1" stroke-linecap="round"/>
+
+                <!-- Junction dots -->
+                <circle cx="258" cy="108" r="2.5" fill="rgba(25,198,179,0.36)"/>
+                <circle cx="235" cy="120" r="2.5" fill="rgba(245,184,75,0.36)"/>
+                <circle cx="305" cy="90"  r="2.5" fill="rgba(25,198,179,0.26)"/>
+                <!-- Ghost nodes -->
+                <circle cx="210" cy="32"  r="3"   stroke="rgba(148,163,184,0.2)" stroke-width="1"/>
+                <circle cx="245" cy="76"  r="3"   stroke="rgba(148,163,184,0.2)" stroke-width="1"/>
+            </svg>
+
+            <div class="suite-badge">
+                <span class="badge-dot"></span>
+                Digital Circuits
+            </div>
+
+            <h1 class="hero-title">
+                Logic &amp; Number Systems<br>
+                <span class="accent-line">Toolkit</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                A focused suite of tools for digital logic, number systems, and boolean algebra — built for students and engineers.
+            </p>
         </header>
 
-        <div class="converter-grid">
-
-            <!-- Input Section -->
-            <div class="input-group">
-                <label>
-                    <span>Input</span>
-                    <span id="inputBaseDisplay">Base 10</span>
-                </label>
-                <div class="input-wrapper">
-                    <input type="text" id="inputValue" placeholder="0" autocomplete="off">
-                    <select id="inputBase">
-                        <!-- Options populated by JS -->
-                    </select>
-                </div>
+        <!-- ── TOOLS ── -->
+        <main class="tools-section">
+            <div class="section-header">
+                <span class="section-label">Available Tools</span>
+                <span class="section-count">3 tools</span>
             </div>
 
-            <!-- Swap Button -->
-            <div class="swap-container">
-                <button class="swap-btn" id="swapBtn" title="Swap Input and Output">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                    </svg>
-                </button>
-            </div>
+            <div class="tools-grid">
 
-            <!-- Output Section -->
-            <div class="input-group">
-                <label>
-                    <span>Output</span>
-                    <span id="outputBaseDisplay">Base 2</span>
-                </label>
-                <div class="input-wrapper">
-                    <div class="output-wrapper">
-                        <input type="text" id="outputValue" class="output-field" readonly placeholder="0">
-                        <span class="copy-indicator">Copy</span>
+                <!-- Base Converter -->
+                <a class="tool-card teal" href="base-converter.html">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                        </svg>
                     </div>
-                    <select id="outputBase">
-                        <!-- Options populated by JS -->
-                    </select>
-                </div>
+                    <div class="card-title">Base Converter</div>
+                    <div class="card-desc">Convert numbers between any integer bases from 2 to 36, including binary, octal, decimal, and hex.</div>
+                    <div class="card-tags">
+                        <span class="tag">Binary</span>
+                        <span class="tag">Hex</span>
+                        <span class="tag">Octal</span>
+                        <span class="tag">Base 2–36</span>
+                    </div>
+                    <div class="card-footer">
+                        <span class="launch-link">
+                            Launch tool
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Complements Calculator -->
+                <a class="tool-card amber" href="complements.html">
+                    <div class="card-icon">
+                        <!-- NOT gate (triangle + bubble) -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 18V6l14 6-14 6z"/>
+                            <circle cx="19.5" cy="12" r="1.5"/>
+                        </svg>
+                    </div>
+                    <div class="card-title">Complements Calculator</div>
+                    <div class="card-desc">Compute r's and (r−1)'s complements for numbers in any base from 2 to 36.</div>
+                    <div class="card-tags">
+                        <span class="tag">n's Comp</span>
+                        <span class="tag">(r−1)'s Comp</span>
+                        <span class="tag">Base 2–36</span>
+                    </div>
+                    <div class="card-footer">
+                        <span class="launch-link">
+                            Launch tool
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Truth Table Generator -->
+                <a class="tool-card coral" href="truth-table.html">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <path stroke-linecap="round" d="M3 9h18M3 15h18M9 3v18"/>
+                        </svg>
+                    </div>
+                    <div class="card-title">Truth Table Generator</div>
+                    <div class="card-desc">Enter any boolean expression and instantly see its complete truth table across all possible input combinations.</div>
+                    <div class="card-tags">
+                        <span class="tag">AND · OR</span>
+                        <span class="tag">XOR</span>
+                        <span class="tag">IMPL · IFF</span>
+                    </div>
+                    <div class="card-footer">
+                        <span class="launch-link">
+                            Launch tool
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+
             </div>
+        </main>
 
-        </div>
+        <!-- ── FOOTER ── -->
+        <footer class="site-footer">
+            <span class="footer-text">Digital Circuits Lab · 3 tools</span>
+            <div class="footer-dots" aria-hidden="true">
+                <span class="footer-dot" style="background: var(--accent)"></span>
+                <span class="footer-dot" style="background: var(--amber)"></span>
+                <span class="footer-dot" style="background: var(--coral)"></span>
+            </div>
+        </footer>
 
-        <div class="info-text">
-            Supports characters 0-9 and A-Z.<br>Tap output to copy.
-        </div>
     </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast">Copied to clipboard!</div>
-
-    <script>
-        const inputVal = document.getElementById('inputValue');
-        const inputBase = document.getElementById('inputBase');
-        const outputVal = document.getElementById('outputValue');
-        const outputBase = document.getElementById('outputBase');
-        const swapBtn = document.getElementById('swapBtn');
-        const inputBaseDisplay = document.getElementById('inputBaseDisplay');
-        const outputBaseDisplay = document.getElementById('outputBaseDisplay');
-
-        function populateBases() {
-            for (let i = 2; i <= 36; i++) {
-                const opt1 = new Option(`Base ${i}`, i);
-                const opt2 = new Option(`Base ${i}`, i);
-                inputBase.add(opt1);
-                outputBase.add(opt2);
-            }
-            inputBase.value = "10";
-            outputBase.value = "2";
-        }
-
-        function getValidCharsRegex(base) {
-            const limit = Math.min(base, 36);
-            let chars = "0123456789";
-            if (limit > 10) {
-                chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            }
-            const escaped = chars.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            return new RegExp(`^[${escaped}]+$`);
-        }
-
-        function convert() {
-            const val = inputVal.value.trim().toUpperCase();
-            const baseIn = parseInt(inputBase.value);
-            const baseOut = parseInt(outputBase.value);
-
-            inputBaseDisplay.textContent = `Base ${baseIn}`;
-            outputBaseDisplay.textContent = `Base ${baseOut}`;
-
-            if (val === "") {
-                outputVal.value = "";
-                inputVal.classList.remove('invalid');
-                return;
-            }
-
-            const validRegex = getValidCharsRegex(baseIn);
-
-            if (!validRegex.test(val)) {
-                inputVal.classList.add('invalid');
-                return;
-            } else {
-                inputVal.classList.remove('invalid');
-            }
-
-            try {
-                const decimalValue = parseInt(val, baseIn);
-
-                if (isNaN(decimalValue)) {
-                    throw new Error("Invalid number");
-                }
-
-                let result = decimalValue.toString(baseOut);
-                if (result === "-0") result = "0";
-
-                outputVal.value = result;
-
-            } catch (e) {
-                console.error("Conversion error:", e);
-                outputVal.value = "Error";
-            }
-        }
-
-        swapBtn.addEventListener('click', () => {
-            const currentOutput = outputVal.value;
-            if (currentOutput && currentOutput !== "Error" && currentOutput !== "") {
-                inputVal.value = currentOutput;
-                const tempBase = inputBase.value;
-                inputBase.value = outputBase.value;
-                outputBase.value = tempBase;
-                convert();
-            }
-        });
-
-        inputVal.addEventListener('input', convert);
-        inputBase.addEventListener('change', convert);
-        outputBase.addEventListener('change', convert);
-
-        outputVal.addEventListener('click', () => {
-            if (outputVal.value && outputVal.value !== "Error") {
-                navigator.clipboard.writeText(outputVal.value).then(() => {
-                    showToast();
-                });
-            }
-        });
-
-        function showToast() {
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2000);
-        }
-
-        populateBases();
-    </script>
 </body>
 
 </html>
