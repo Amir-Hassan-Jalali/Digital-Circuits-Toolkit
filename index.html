@@ -129,8 +129,15 @@
         }
 
         @keyframes dotPulse {
-            0%, 100% { box-shadow: 0 0 0 3px rgba(25, 198, 179, 0.22); }
-            50% { box-shadow: 0 0 0 5px rgba(25, 198, 179, 0.08); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 3px rgba(25, 198, 179, 0.22);
+            }
+
+            50% {
+                box-shadow: 0 0 0 5px rgba(25, 198, 179, 0.08);
+            }
         }
 
         .hero-title {
@@ -217,9 +224,17 @@
             transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
         }
 
-        .tool-card:nth-child(1) { animation: fadeUp 0.45s ease 0.3s both; }
-        .tool-card:nth-child(2) { animation: fadeUp 0.45s ease 0.38s both; }
-        .tool-card:nth-child(3) { animation: fadeUp 0.45s ease 0.46s both; }
+        .tool-card:nth-child(1) {
+            animation: fadeUp 0.45s ease 0.3s both;
+        }
+
+        .tool-card:nth-child(2) {
+            animation: fadeUp 0.45s ease 0.38s both;
+        }
+
+        .tool-card:nth-child(3) {
+            animation: fadeUp 0.45s ease 0.46s both;
+        }
 
         .tool-card::after {
             content: '';
@@ -464,8 +479,13 @@
         }
 
         @keyframes glowMove {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
         }
 
         @keyframes fadeUp {
@@ -473,6 +493,7 @@
                 opacity: 0;
                 transform: translateY(13px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -532,7 +553,8 @@
     <div class="container">
 
         <header class="hero">
-            <svg class="hero-deco" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <svg class="hero-deco" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true">
                 <circle cx="255" cy="55" r="5" stroke="rgba(25,198,179,0.65)" stroke-width="1.5" />
                 <circle cx="255" cy="55" r="13" stroke="rgba(25,198,179,0.18)" stroke-width="1" />
                 <circle cx="170" cy="120" r="5" stroke="rgba(245,184,75,0.65)" stroke-width="1.5" />
@@ -540,10 +562,14 @@
                 <circle cx="295" cy="165" r="5" stroke="rgba(240,113,103,0.65)" stroke-width="1.5" />
                 <circle cx="295" cy="165" r="13" stroke="rgba(240,113,103,0.18)" stroke-width="1" />
 
-                <path d="M268 55 L305 55 L305 152" stroke="rgba(25,198,179,0.22)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M258 62 L258 108 L183 108 L183 120" stroke="rgba(25,198,179,0.17)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M177 120 L235 120 L282 165" stroke="rgba(245,184,75,0.22)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M210 32 L210 76 L245 76" stroke="rgba(148,163,184,0.10)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M268 55 L305 55 L305 152" stroke="rgba(25,198,179,0.22)" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M258 62 L258 108 L183 108 L183 120" stroke="rgba(25,198,179,0.17)" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M177 120 L235 120 L282 165" stroke="rgba(245,184,75,0.22)" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M210 32 L210 76 L245 76" stroke="rgba(148,163,184,0.10)" stroke-width="1"
+                    stroke-linecap="round" stroke-linejoin="round" />
                 <path d="M328 65 L328 200" stroke="rgba(148,163,184,0.08)" stroke-width="1" stroke-linecap="round" />
 
                 <circle cx="258" cy="108" r="2.5" fill="rgba(25,198,179,0.36)" />
@@ -577,12 +603,15 @@
             <div class="tools-grid">
                 <a class="tool-card teal" href="base-converter.html">
                     <div class="card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                         </svg>
                     </div>
                     <div class="card-title">Base Converter</div>
-                    <div class="card-desc">Convert numbers between any integer bases from 2 to 36, including binary, octal, decimal, and hex.</div>
+                    <div class="card-desc">Convert numbers between any integer bases from 2 to 36, including binary,
+                        octal, decimal, and hex.</div>
                     <div class="card-tags">
                         <span class="tag">Binary</span>
                         <span class="tag">Hex</span>
@@ -601,13 +630,15 @@
 
                 <a class="tool-card amber" href="complements.html">
                     <div class="card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 18V6l14 6-14 6z" />
                             <circle cx="19.5" cy="12" r="1.5" />
                         </svg>
                     </div>
                     <div class="card-title">Complements Calculator</div>
-                    <div class="card-desc">Compute r's and (r−1)'s complements for numbers in any base from 2 to 36.</div>
+                    <div class="card-desc">Compute r's and (r−1)'s complements for numbers in any base from 2 to 36.
+                    </div>
                     <div class="card-tags">
                         <span class="tag">n's Comp</span>
                         <span class="tag">(r−1)'s Comp</span>
@@ -625,13 +656,15 @@
 
                 <a class="tool-card coral" href="truth-table.html">
                     <div class="card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            xmlns="http://www.w3.org/2000/svg">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                             <path stroke-linecap="round" d="M3 9h18M3 15h18M9 3v18" />
                         </svg>
                     </div>
                     <div class="card-title">Truth Table Generator</div>
-                    <div class="card-desc">Enter any boolean expression and instantly see its complete truth table across all possible input combinations.</div>
+                    <div class="card-desc">Enter any boolean expression and instantly see its complete truth table
+                        across all possible input combinations.</div>
                     <div class="card-tags">
                         <span class="tag">AND · OR</span>
                         <span class="tag">XOR</span>
@@ -640,6 +673,39 @@
                     <div class="card-footer">
                         <span class="launch-link">
                             Launch tool
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+
+                <a class="tool-card teal" href="cheatsheet.html">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 3h8l4 4v14H7z" />
+                            <path d="M15 3v4h4" />
+                            <path d="M10 11h6" />
+                            <path d="M10 15h4" />
+                        </svg>
+                    </div>
+
+                    <div class="card-title">Boolean Algebra Cheat Sheet</div>
+
+                    <div class="card-desc">
+                        A quick reference for Boolean identities, logic laws, De Morgan's rules, Canonical forms, and
+                        simplification techniques.
+                    </div>
+
+                    <div class="card-tags">
+                        <span class="tag">IDENTITIES</span>
+                        <span class="tag">DE MORGAN</span>
+                        <span class="tag">K-MAP</span>
+                    </div>
+
+                    <div class="card-footer">
+                        <span class="launch-link">
+                            Open cheat sheet
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
@@ -657,15 +723,18 @@
                     <span class="footer-dot" style="background: var(--coral)"></span> 
                 </div> -->
                 <span class="footer-text">
-                    Developed with &hearts; by 
+                    Developed with &hearts; by
                     <a class="footer-link" href="https://github.com/Amir-Hassan-Jalali">Amir Hassan Jalali</a>
                 </span>
             </div>
-            
+
             <div class="footer-right">
-                <a class="github-btn" href="https://github.com/Amir-Hassan-Jalali/Digital-Circuits-Toolkit" target="_blank" rel="noopener noreferrer">
+                <a class="github-btn" href="https://github.com/Amir-Hassan-Jalali/Digital-Circuits-Toolkit"
+                    target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.58-3.58-8-8-8z"></path>
+                        <path fill-rule="evenodd"
+                            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.58-3.58-8-8-8z">
+                        </path>
                     </svg>
                     Repository
                 </a>

@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boolean Algebra Cheatsheet</title>
+    <style>
+        :root {
+            --bg-color: #090b10;
+            --panel: #11151d;
+            --panel-strong: #151b26;
+            --field: #090d14;
+            --field-raised: #0e1420;
+            --text-primary: #f8fafc;
+            --text-secondary: #9aa7b8;
+            --text-muted: #687589;
+            --accent: #19c6b3;
+            --accent-hover: #5eead4;
+            --accent-soft: rgba(25, 198, 179, 0.13);
+            --accent-soft2: rgba(25, 198, 179, 0.07);
+            --amber: #f5b84b;
+            --amber-soft: rgba(245, 184, 75, 0.12);
+            --coral: #f07167;
+            --coral-soft: rgba(240, 113, 103, 0.12);
+            --border: rgba(148, 163, 184, 0.18);
+            --border-strong: rgba(148, 163, 184, 0.28);
+            --shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background:
+                linear-gradient(135deg, rgba(25, 198, 179, 0.16), transparent 34%),
+                linear-gradient(315deg, rgba(240, 113, 103, 0.13), transparent 32%),
+                linear-gradient(180deg, #10131b 0%, var(--bg-color) 64%);
+            color: var(--text-primary);
+            font-family: Inter, 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 18px;
+            padding-top: max(18px, env(safe-area-inset-top));
+            padding-bottom: max(36px, env(safe-area-inset-bottom));
+        }
+
+        .container {
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 42%),
+                var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 960px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--amber), var(--coral));
+        }
+
+        header {
+            align-items: flex-start;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1.35rem 1.5rem 1.1rem;
+        }
+
+        h1 {
+            color: var(--text-primary);
+            font-size: 1.6rem;
+            font-weight: 760;
+            letter-spacing: 0;
+            line-height: 1.12;
+            margin-bottom: 0.38rem;
+        }
+
+        p.subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .status-line {
+            align-items: center;
+            color: var(--text-muted);
+            display: flex;
+            flex: 0 0 auto;
+            font-size: 0.82rem;
+            gap: 0.45rem;
+            min-height: 1.25rem;
+            padding-top: 0.15rem;
+            white-space: nowrap;
+        }
+
+        .status-dot {
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(25, 198, 179, 0.12);
+            height: 7px;
+            width: 7px;
+            flex-shrink: 0;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--border);
+            padding: 0 1.5rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tab-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            font: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            padding: 0.85rem 1rem;
+            text-transform: uppercase;
+            transition: color 0.18s, border-color 0.18s;
+            white-space: nowrap;
+            margin-bottom: -1px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-secondary);
+        }
+
+        .tab-btn.active {
+            color: var(--accent-hover);
+            border-bottom-color: var(--accent);
+        }
+
+        /* Content panels */
+        .tab-panel {
+            display: none;
+            padding: 1.25rem;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Section grid */
+        .section-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+
+        .section-grid.two-col {
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        }
+
+        .section-grid.full {
+            grid-template-columns: 1fr;
+        }
+
+        /* Cards */
+        .card {
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
+                var(--panel-strong);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .card-title {
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            font-weight: 760;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-accent {
+            background: var(--accent);
+        }
+
+        .dot-amber {
+            background: var(--amber);
+        }
+
+        .dot-coral {
+            background: var(--coral);
+        }
+
+        /* Identity / law rows */
+        .law-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .law-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            background: var(--field);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.55rem 0.8rem;
+            transition: border-color 0.18s, background-color 0.18s;
+            cursor: default;
+        }
+
+        .law-row:hover {
+            border-color: rgba(94, 234, 212, 0.28);
+            background: var(--field-raised);
+        }
+
+        .law-name {
+            color: var(--text-muted);
+            font-size: 0.73rem;
+            font-weight: 600;
+            min-width: 90px;
+            flex-shrink: 0;
+        }
+
+        .law-expr {
+            font-family: 'Cascadia Mono', 'SFMono-Regular', Consolas, 'Courier New', monospace;
+            font-size: 0.92rem;
+            font-weight: 650;
+            color: var(--accent-hover);
+            text-align: right;
+            flex: 1;
+        }
+
+        .law-expr .op-and {
+            color: var(--amber);
+        }
+
+        .law-expr .op-or {
+            color: var(--coral);
+        }
+
+        .law-expr .op-not {
+            color: #a78bfa;
+        }
+
+        .law-expr .op-xor {
+            color: #60a5fa;
+        }
+
+        .law-expr .val-1 {
+            color: var(--accent-hover);
+        }
+
+        .law-expr .val-0 {
+            color: var(--text-muted);
+        }
+
+        /* Truth tables */
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Cascadia Mono', 'SFMono-Regular', Consolas, 'Courier New', monospace;
+            font-size: 0.88rem;
+        }
+
+        .truth-table thead th {
+            background: var(--field);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            font-weight: 760;
+            letter-spacing: 0.05em;
+            padding: 0.5rem 0.7rem;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .truth-table tbody td {
+            border: 1px solid var(--border);
+            padding: 0.45rem 0.7rem;
+            text-align: center;
+            background: var(--field-raised);
+            transition: background-color 0.15s;
+        }
+
+        .truth-table tbody tr:hover td {
+            background: rgba(25, 198, 179, 0.06);
+        }
+
+        .truth-table .v1 {
+            color: var(--accent-hover);
+            font-weight: 700;
+        }
+
+        .truth-table .v0 {
+            color: var(--text-muted);
+        }
+
+        .truth-table thead th.result-col {
+            color: var(--amber);
+        }
+
+        /* Gate symbol cards */
+        .gates-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        }
+
+        .gate-card {
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
+                var(--panel-strong);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .gate-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .gate-name {
+            font-size: 0.85rem;
+            font-weight: 760;
+            color: var(--text-primary);
+        }
+
+        .gate-symbol-badge {
+            font-family: 'Cascadia Mono', 'SFMono-Regular', Consolas, 'Courier New', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            background: var(--accent-soft);
+            color: var(--accent-hover);
+            border: 1px solid rgba(94, 234, 212, 0.22);
+        }
+
+        .gate-symbol-badge.amber {
+            background: var(--amber-soft);
+            color: var(--amber);
+            border-color: rgba(245, 184, 75, 0.22);
+        }
+
+        .gate-symbol-badge.coral {
+            background: var(--coral-soft);
+            color: var(--coral);
+            border-color: rgba(240, 113, 103, 0.22);
+        }
+
+        .gate-symbol-badge.violet {
+            background: rgba(167, 139, 250, 0.12);
+            color: #a78bfa;
+            border-color: rgba(167, 139, 250, 0.22);
+        }
+
+        .gate-symbol-badge.blue {
+            background: rgba(96, 165, 250, 0.12);
+            color: #60a5fa;
+            border-color: rgba(96, 165, 250, 0.22);
+        }
+
+        .gate-expr {
+            font-family: 'Cascadia Mono', 'SFMono-Regular', Consolas, 'Courier New', monospace;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Inline truth table inside gate card */
+        .mini-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Cascadia Mono', 'SFMono-Regular', Consolas, 'Courier New', monospace;
+            font-size: 0.82rem;
+        }
+
+        .mini-table th {
+            background: var(--field);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            font-weight: 760;
+            padding: 0.35rem 0.5rem;
+            text-align: center;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .mini-table td {
+            border: 1px solid var(--border);
+            background: var(--field-raised);
+            padding: 0.32rem 0.5rem;
+            text-align: center;
+        }
+
+        .mini-table .v1 {
+            color: var(--accent-hover);
+            font-weight: 700;
+        }
+
+        .mini-table .v0 {
+            color: var(--text-muted);
+        }
+
+        .mini-table th.r {
+            color: var(--amber);
+        }
+
+        /* DeMorgan section */
+        .demorgan-row {
+            background: var(--field);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.7rem 0.9rem;
+            margin-bottom: 0.5rem;
+            transition: border-color 0.18s;
+        }
+
+        .demorgan-row:hover {
+            border-color: rgba(94, 234, 212, 0.28);
+        }
+
+        .demorgan-label {
+            font-size: 0.69rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.3rem;
+        }
+
+        .demorgan-expr {
+            font-family: 'Cascadia Mono', 'SFMono-Regular', Consolas, 'Courier New', monospace;
+            font-size: 1.05rem;
+            font-weight: 650;
+            color: var(--accent-hover);
+        }
+
+        .demorgan-eq {
+            color: var(--text-muted);
+            margin: 0 0.4rem;
+        }
+
+        /* SOP / POS */
+        .form-block {
+            background: var(--field);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-block-label {
+            font-size: 0.69rem;
+            font-weight: 760;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.35rem;
+        }
+
+        .form-block-label.amber {
+            color: var(--amber);
+        }
+
+        .form-block-label.coral {
+            color: var(--coral);
+        }
+
+        .form-block-expr {
+            font-family: 'Cascadia Mono', 'SFMono-Regular', Consolas, 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .form-block-desc {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+
+        /* Karnaugh map */
+        .kmap-wrapper {
+            overflow-x: auto;
+        }
+
+        .kmap-table {
+            border-collapse: collapse;
+            font-family: 'Cascadia Mono', 'SFMono-Regular', Consolas, 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin: 0 auto;
+        }
+
+        .kmap-table th,
+        .kmap-table td {
+            border: 1px solid var(--border);
+            text-align: center;
+            min-width: 46px;
+            height: 40px;
+            padding: 0.3rem;
+        }
+
+        .kmap-table th {
+            background: var(--field);
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            font-weight: 760;
+            letter-spacing: 0.04em;
+        }
+
+        .kmap-table td {
+            background: var(--field-raised);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: background-color 0.15s, color 0.15s;
+        }
+
+        .kmap-table td.v1 {
+            color: var(--accent-hover);
+            font-weight: 700;
+            background: var(--accent-soft2);
+        }
+
+        .kmap-table td:hover {
+            background: rgba(25, 198, 179, 0.1);
+            border-color: rgba(94, 234, 212, 0.35);
+        }
+
+        .kmap-axis-label {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .kmap-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.6rem;
+            text-align: center;
+        }
+
+        /* Operator precedence */
+        .precedence-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .prec-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--field);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem 0.8rem;
+        }
+
+        .prec-rank {
+            font-size: 0.68rem;
+            font-weight: 760;
+            color: var(--text-muted);
+            min-width: 26px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            text-align: center;
+            padding: 0.15rem 0.3rem;
+        }
+
+        .prec-op {
+            font-family: 'Cascadia Mono', 'SFMono-Regular', Consolas, 'Courier New', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            min-width: 60px;
+        }
+
+        .prec-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .prec-op.accent {
+            color: var(--accent-hover);
+        }
+
+        .prec-op.amber {
+            color: var(--amber);
+        }
+
+        .prec-op.coral {
+            color: var(--coral);
+        }
+
+        .prec-op.violet {
+            color: #a78bfa;
+        }
+
+        .prec-op.blue {
+            color: #60a5fa;
+        }
+
+        /* Notation comparison */
+        .notation-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+        }
+
+        .notation-table th {
+            background: var(--field);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 760;
+            letter-spacing: 0.05em;
+            padding: 0.5rem 0.7rem;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .notation-table td {
+            border: 1px solid var(--border);
+            background: var(--field-raised);
+            padding: 0.35rem 0.7rem;
+            text-align: center;
+            font-family: 'Cascadia Mono', 'SFMono-Regular', Consolas, 'Courier New', monospace;
+            font-size: 0.85rem;
+            transition: background-color 0.15s;
+            vertical-align: middle;
+        }
+
+        .notation-table tr:hover td {
+            background: rgba(25, 198, 179, 0.06);
+        }
+
+        .notation-table .op-name {
+            font-family: inherit;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                align-items: flex-start;
+            }
+
+            header {
+                display: block;
+                padding: 1.2rem 1rem 1rem;
+            }
+
+            .status-line {
+                margin-top: 0.85rem;
+            }
+
+            h1 {
+                font-size: 1.35rem;
+            }
+
+            .tab-nav {
+                padding: 0 1rem;
+            }
+
+            .tab-panel {
+                padding: 1rem;
+            }
+
+            .section-grid,
+            .section-grid.two-col {
+                grid-template-columns: 1fr;
+            }
+
+            .gates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 420px) {
+            body {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .tab-btn {
+                font-size: 0.72rem;
+                padding: 0.75rem 0.65rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <div>
+                <h1>Boolean Algebra</h1>
+                <p class="subtitle">Laws, gates, identities &amp; canonical forms</p>
+            </div>
+            <div class="status-line">
+                <span class="status-dot"></span>
+                <span>Quick Reference</span>
+            </div>
+        </header>
+
+        <nav class="tab-nav" role="tablist">
+            <button class="tab-btn active" role="tab" data-tab="laws">Laws</button>
+            <button class="tab-btn" role="tab" data-tab="gates">Gates</button>
+            <button class="tab-btn" role="tab" data-tab="demorgan">De Morgan</button>
+            <button class="tab-btn" role="tab" data-tab="forms">SOP / POS</button>
+            <button class="tab-btn" role="tab" data-tab="kmap">K-Map</button>
+            <button class="tab-btn" role="tab" data-tab="notation">Notation</button>
+        </nav>
+
+        <!-- ── LAWS ── -->
+        <div class="tab-panel active" id="tab-laws">
+            <div class="section-grid two-col">
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-accent"></span>Identity Laws</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">AND Identity</span>
+                            <span class="law-expr">A <span class="op-and">·</span> <span class="val-1">1</span> =
+                                A</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">OR Identity</span>
+                            <span class="law-expr">A <span class="op-or">+</span> <span class="val-0">0</span> =
+                                A</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-amber"></span>Null / Domination Laws</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">AND Null</span>
+                            <span class="law-expr">A <span class="op-and">·</span> <span class="val-0">0</span> = <span
+                                    class="val-0">0</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">OR Null</span>
+                            <span class="law-expr">A <span class="op-or">+</span> <span class="val-1">1</span> = <span
+                                    class="val-1">1</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-accent"></span>Idempotent Laws</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">AND Idempotent</span>
+                            <span class="law-expr">A <span class="op-and">·</span> A = A</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">OR Idempotent</span>
+                            <span class="law-expr">A <span class="op-or">+</span> A = A</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-coral"></span>Complement Laws</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">AND Complement</span>
+                            <span class="law-expr">A <span class="op-and">·</span> <span class="op-not">A′</span> = <span
+                                    class="val-0">0</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">OR Complement</span>
+                            <span class="law-expr">A <span class="op-or">+</span> <span class="op-not">A′</span> = <span
+                                    class="val-1">1</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Double Negation</span>
+                            <span class="law-expr"><span class="op-not">(A′)′</span> = A</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-accent"></span>Commutative Laws</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">AND</span>
+                            <span class="law-expr">A <span class="op-and">·</span> B = B <span class="op-and">·</span>
+                                A</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">OR</span>
+                            <span class="law-expr">A <span class="op-or">+</span> B = B <span class="op-or">+</span>
+                                A</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-amber"></span>Associative Laws</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">AND</span>
+                            <span class="law-expr">(A<span class="op-and">·</span>B)<span class="op-and">·</span>C =
+                                A<span class="op-and">·</span>(B<span class="op-and">·</span>C)</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">OR</span>
+                            <span class="law-expr">(A<span class="op-or">+</span>B)<span class="op-or">+</span>C =
+                                A<span class="op-or">+</span>(B<span class="op-or">+</span>C)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-coral"></span>Distributive Laws</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">AND over OR</span>
+                            <span class="law-expr">A<span class="op-and">·</span>(B<span class="op-or">+</span>C) =
+                                AB<span class="op-or">+</span>AC</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">OR over AND</span>
+                            <span class="law-expr">A<span class="op-or">+</span>BC = (A<span
+                                    class="op-or">+</span>B)(A<span class="op-or">+</span>C)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-accent"></span>Absorption Laws</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">Absorb OR</span>
+                            <span class="law-expr">A <span class="op-or">+</span> (A <span class="op-and">·</span> B) =
+                                A</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Absorb AND</span>
+                            <span class="law-expr">A <span class="op-and">·</span> (A <span class="op-or">+</span> B) =
+                                A</span>
+                        </div>
+                    </div>
+                </div>
+                <hr style="grid-column: 1 / -1; border: none; border-top: 1px solid rgba(148, 163, 184, 0.18); margin: 1rem 0;">
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-accent"></span>Duality Principle</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">Rule</span>
+                            <span class="law-expr" style="font-size:0.8rem">Swap <span class="op-and">·</span> ↔ <span
+                                    class="op-or">+</span> and <span class="val-0">0</span> ↔ <span
+                                    class="val-1">1</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Example</span>
+                            <span class="law-expr">A<span class="op-or">+</span><span class="val-0">0</span>=A
+                                &nbsp;⟷&nbsp; A<span class="op-and">·</span><span class="val-1">1</span>=A</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Example</span>
+                            <span class="law-expr">A<span class="op-or">+</span><span class="val-1">1</span>=<span
+                                    class="val-1">1</span> &nbsp;⟷&nbsp; A<span class="op-and">·</span><span
+                                    class="val-0">0</span>=<span class="val-0">0</span></span>
+                        </div>
+                    </div>
+                </div>
+                                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-amber"></span>XOR Identities</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">Identity</span>
+                            <span class="law-expr">A <span class="op-xor">⊕</span> <span class="val-0">0</span> =
+                                A</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Self-inverse</span>
+                            <span class="law-expr">A <span class="op-xor">⊕</span> A = <span
+                                    class="val-0">0</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Complement</span>
+                            <span class="law-expr">A <span class="op-xor">⊕</span> <span class="val-1">1</span> = <span
+                                    class="op-not">A′</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Commutative</span>
+                            <span class="law-expr">A <span class="op-xor">⊕</span> B = B <span class="op-xor">⊕</span>
+                                A</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Associative</span>
+                            <span class="law-expr">(A<span class="op-xor">⊕</span>B)<span class="op-xor">⊕</span>C =
+                                A<span class="op-xor">⊕</span>(B<span class="op-xor">⊕</span>C)</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── GATES ── -->
+        <div class="tab-panel" id="tab-gates">
+            <div class="gates-grid">
+
+                <!-- AND -->
+                <div class="gate-card">
+                    <div class="gate-card-header">
+                        <span class="gate-name">AND Gate</span>
+                        <span class="gate-symbol-badge amber">A · B</span>
+                    </div>
+                    <div class="gate-expr" style="color:var(--amber)">Output is 1 only when ALL inputs are 1</div>
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th class="r">A·B</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                            </tr>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- OR -->
+                <div class="gate-card">
+                    <div class="gate-card-header">
+                        <span class="gate-name">OR Gate</span>
+                        <span class="gate-symbol-badge coral">A + B</span>
+                    </div>
+                    <div class="gate-expr" style="color:var(--coral)">Output is 1 when ANY input is 1</div>
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th class="r">A+B</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                            </tr>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- NOT -->
+                <div class="gate-card">
+                    <div class="gate-card-header">
+                        <span class="gate-name">NOT Gate</span>
+                        <span class="gate-symbol-badge violet">A′</span>
+                    </div>
+                    <div class="gate-expr" style="color:#a78bfa">Inverts the input (complement)</div>
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th class="r">A′</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- NAND -->
+                <div class="gate-card">
+                    <div class="gate-card-header">
+                        <span class="gate-name">NAND Gate</span>
+                        <span class="gate-symbol-badge violet">(A·B)′</span>
+                    </div>
+                    <div class="gate-expr" style="color:#a78bfa">NOT AND — universal gate</div>
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th class="r">(A·B)′</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                            </tr>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- NOR -->
+                <div class="gate-card">
+                    <div class="gate-card-header">
+                        <span class="gate-name">NOR Gate</span>
+                        <span class="gate-symbol-badge violet">(A+B)′</span>
+                    </div>
+                    <div class="gate-expr" style="color:#a78bfa">NOT OR — universal gate</div>
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th class="r">(A+B)′</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                            </tr>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- XOR -->
+                <div class="gate-card">
+                    <div class="gate-card-header">
+                        <span class="gate-name">XOR Gate</span>
+                        <span class="gate-symbol-badge blue">A ⊕ B</span>
+                    </div>
+                    <div class="gate-expr" style="color:#60a5fa">Output is 1 when inputs DIFFER</div>
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th class="r">A⊕B</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                            </tr>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- XNOR -->
+                <div class="gate-card">
+                    <div class="gate-card-header">
+                        <span class="gate-name">XNOR Gate</span>
+                        <span class="gate-symbol-badge blue">A ⊙ B</span>
+                    </div>
+                    <div class="gate-expr" style="color:#60a5fa">Output is 1 when inputs are EQUAL</div>
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th class="r">A⊙B</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                            </tr>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Buffer -->
+                <div class="gate-card">
+                    <div class="gate-card-header">
+                        <span class="gate-name">Buffer</span>
+                        <span class="gate-symbol-badge">A</span>
+                    </div>
+                    <div class="gate-expr" style="color:var(--text-muted)">Output equals input — used for signal driving
+                    </div>
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th class="r">Out</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="v0">0</td>
+                                <td class="v0">0</td>
+                            </tr>
+                            <tr>
+                                <td class="v1">1</td>
+                                <td class="v1">1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── DE MORGAN ── -->
+        <div class="tab-panel" id="tab-demorgan">
+            <div class="section-grid full">
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-coral"></span>De Morgan's Theorems</div>
+                    <div class="demorgan-row">
+                        <div class="demorgan-label">First Theorem — NAND → NOR of complements</div>
+                        <div class="demorgan-expr">
+                            <span style="color:#a78bfa">(A · B)′</span>
+                            <span class="demorgan-eq">=</span>
+                            <span style="color:#a78bfa">A′</span>
+                            <span style="color:var(--coral)"> + </span>
+                            <span style="color:#a78bfa">B′</span>
+                        </div>
+                    </div>
+                    <div class="demorgan-row">
+                        <div class="demorgan-label">Second Theorem — NOR → NAND of complements</div>
+                        <div class="demorgan-expr">
+                            <span style="color:#a78bfa">(A + B)′</span>
+                            <span class="demorgan-eq">=</span>
+                            <span style="color:#a78bfa">A′</span>
+                            <span style="color:var(--amber)"> · </span>
+                            <span style="color:#a78bfa">B′</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-accent"></span>Generalized Form</div>
+                    <div class="demorgan-row">
+                        <div class="demorgan-label">Complement of AND</div>
+                        <div class="demorgan-expr">
+                            <span style="color:#a78bfa">(A₁ · A₂ · … · Aₙ)′</span>
+                            <span class="demorgan-eq">=</span>
+                            <span style="color:#a78bfa">A₁′</span>
+                            <span style="color:var(--coral)"> + </span>
+                            <span style="color:#a78bfa">A₂′</span>
+                            <span style="color:var(--coral)"> + … + </span>
+                            <span style="color:#a78bfa">Aₙ′</span>
+                        </div>
+                    </div>
+                    <div class="demorgan-row">
+                        <div class="demorgan-label">Complement of OR</div>
+                        <div class="demorgan-expr">
+                            <span style="color:#a78bfa">(A₁ + A₂ + … + Aₙ)′</span>
+                            <span class="demorgan-eq">=</span>
+                            <span style="color:#a78bfa">A₁′</span>
+                            <span style="color:var(--amber)"> · </span>
+                            <span style="color:#a78bfa">A₂′</span>
+                            <span style="color:var(--amber)"> · … · </span>
+                            <span style="color:#a78bfa">Aₙ′</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-amber"></span>Application — Gate
+                        Substitution</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">NAND from NOR</span>
+                            <span class="law-expr"><span class="op-not">(A·B)′</span> = <span
+                                    class="op-not">((A′+B′)′)′</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">AND from NAND</span>
+                            <span class="law-expr">A<span class="op-and">·</span>B = <span
+                                    class="op-not">((A·B)′)′</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">OR from NAND</span>
+                            <span class="law-expr">A<span class="op-or">+</span>B = <span
+                                    class="op-not">(A′·B′)′</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">NOT from NAND</span>
+                            <span class="law-expr"><span class="op-not">A′</span> = <span
+                                    class="op-not">(A·A)′</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">NOT from NOR</span>
+                            <span class="law-expr"><span class="op-not">A′</span> = <span
+                                    class="op-not">(A+A)′</span></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── SOP / POS ── -->
+        <div class="tab-panel" id="tab-forms">
+            <div class="section-grid two-col">
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-amber"></span>Sum of Products (SOP)</div>
+                    <div class="form-block">
+                        <div class="form-block-label amber">Structure</div>
+                        <div class="form-block-expr">F = <span style="color:var(--amber)">(A′B′C)</span> <span
+                                style="color:var(--coral)">+</span> <span style="color:var(--amber)">(AB′C)</span> <span
+                                style="color:var(--coral)">+</span> <span style="color:var(--amber)">(ABC)</span></div>
+                        <div class="form-block-desc">OR of AND terms (minterms). Each term is a product; the expression
+                            is their sum.</div>
+                    </div>
+                    <div class="form-block">
+                        <div class="form-block-label amber">Minterm (m)</div>
+                        <div class="form-block-expr">Row where F = <span style="color:var(--accent-hover)">1</span>
+                        </div>
+                        <div class="form-block-desc">Include the row's AND term in the sum. Complement variables that
+                            are 0 in that row.</div>
+                    </div>
+                    <div class="form-block">
+                        <div class="form-block-label amber">Σ Notation</div>
+                        <div class="form-block-expr">F(A,B,C) = Σm(<span
+                                style="color:var(--accent-hover)">1,3,5,7</span>)</div>
+                        <div class="form-block-desc">List the row indices (minterms) where F = 1.</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-coral"></span>Product of Sums (POS)</div>
+                    <div class="form-block">
+                        <div class="form-block-label coral">Structure</div>
+                        <div class="form-block-expr">F = <span style="color:var(--coral)">(A+B+C)</span> <span
+                                style="color:var(--amber)">·</span> <span style="color:var(--coral)">(A′+B+C′)</span>
+                        </div>
+                        <div class="form-block-desc">AND of OR terms (maxterms). Each term is a sum; the expression is
+                            their product.</div>
+                    </div>
+                    <div class="form-block">
+                        <div class="form-block-label coral">Maxterm (M)</div>
+                        <div class="form-block-expr">Row where F = <span style="color:var(--text-muted)">0</span></div>
+                        <div class="form-block-desc">Include the row's OR term in the product. Complement variables that
+                            are 1 in that row.</div>
+                    </div>
+                    <div class="form-block">
+                        <div class="form-block-label coral">Π Notation</div>
+                        <div class="form-block-expr">F(A,B,C) = ΠM(<span style="color:var(--coral)">0,2,4,6</span>)
+                        </div>
+                        <div class="form-block-desc">List the row indices (maxterms) where F = 0.</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-accent"></span>Minterm / Maxterm
+                        Relationship</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">Complement</span>
+                            <span class="law-expr">mᵢ = <span class="op-not">Mᵢ′</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">SOP ↔ POS</span>
+                            <span class="law-expr">Σm(…) = ΠM(remaining)</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Total rows</span>
+                            <span class="law-expr">2ⁿ for n variables</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-amber"></span>Simplification Steps</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">Step 1</span>
+                            <span class="law-expr" style="font-size:0.78rem">Build truth table</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Step 2</span>
+                            <span class="law-expr" style="font-size:0.78rem">Identify 1-rows (SOP)</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Step 3</span>
+                            <span class="law-expr" style="font-size:0.78rem">Write minterms</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Step 4</span>
+                            <span class="law-expr" style="font-size:0.78rem">Simplify with K-Map</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── K-MAP ── -->
+        <div class="tab-panel" id="tab-kmap">
+            <div class="section-grid two-col">
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-accent"></span>2-Variable K-Map</div>
+                    <div class="kmap-wrapper">
+                        <table class="kmap-table" id="kmap2">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>B=0</th>
+                                    <th>B=1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>A=0</th>
+                                    <td data-idx="0">0</td>
+                                    <td data-idx="1">0</td>
+                                </tr>
+                                <tr>
+                                    <th>A=1</th>
+                                    <td data-idx="2">0</td>
+                                    <td data-idx="3">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="kmap-hint">Click cells to toggle 0 / 1</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-amber"></span>3-Variable K-Map</div>
+                    <div class="kmap-wrapper">
+                        <table class="kmap-table" id="kmap3">
+                            <thead>
+                                <tr>
+                                    <th>A \ BC</th>
+                                    <th>00</th>
+                                    <th>01</th>
+                                    <th>11</th>
+                                    <th>10</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>0</th>
+                                    <td data-idx="0">0</td>
+                                    <td data-idx="1">0</td>
+                                    <td data-idx="3">0</td>
+                                    <td data-idx="2">0</td>
+                                </tr>
+                                <tr>
+                                    <th>1</th>
+                                    <td data-idx="4">0</td>
+                                    <td data-idx="5">0</td>
+                                    <td data-idx="7">0</td>
+                                    <td data-idx="6">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="kmap-hint">Gray code ordering: 00 01 11 10</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-coral"></span>4-Variable K-Map</div>
+                    <div class="kmap-wrapper">
+                        <table class="kmap-table" id="kmap4">
+                            <thead>
+                                <tr>
+                                    <th>AB \ CD</th>
+                                    <th>00</th>
+                                    <th>01</th>
+                                    <th>11</th>
+                                    <th>10</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>00</th>
+                                    <td data-idx="0">0</td>
+                                    <td data-idx="1">0</td>
+                                    <td data-idx="3">0</td>
+                                    <td data-idx="2">0</td>
+                                </tr>
+                                <tr>
+                                    <th>01</th>
+                                    <td data-idx="4">0</td>
+                                    <td data-idx="5">0</td>
+                                    <td data-idx="7">0</td>
+                                    <td data-idx="6">0</td>
+                                </tr>
+                                <tr>
+                                    <th>11</th>
+                                    <td data-idx="12">0</td>
+                                    <td data-idx="13">0</td>
+                                    <td data-idx="15">0</td>
+                                    <td data-idx="14">0</td>
+                                </tr>
+                                <tr>
+                                    <th>10</th>
+                                    <td data-idx="8">0</td>
+                                    <td data-idx="9">0</td>
+                                    <td data-idx="11">0</td>
+                                    <td data-idx="10">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="kmap-hint">Click to fill; group 1s in powers of 2</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-accent"></span>Grouping Rules</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">Group size</span>
+                            <span class="law-expr">1, 2, 4, 8, 16 …</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Largest first</span>
+                            <span class="law-expr" style="font-size:0.78rem">Always use the biggest valid groups</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Wrap edges</span>
+                            <span class="law-expr" style="font-size:0.78rem">Top ↔ Bottom, Left ↔ Right</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Each 1 covered</span>
+                            <span class="law-expr" style="font-size:0.78rem">Every 1 must be in ≥1 group</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Don't cares (X)</span>
+                            <span class="law-expr" style="font-size:0.78rem">Use if it enlarges a group</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">Eliminated var</span>
+                            <span class="law-expr" style="font-size:0.78rem">Var changes in group → drops out</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── NOTATION ── -->
+        <div class="tab-panel" id="tab-notation">
+            <div class="section-grid two-col">
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-accent"></span>Operator Symbols</div>
+                    <table class="notation-table">
+                        <thead>
+                            <tr>
+                                <th>Operation</th>
+                                <th>Math</th>
+                                <th>Code / CS</th>
+                                <th>Gate shape</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- AND -->
+                            <tr>
+                                <td class="op-name">AND</td>
+                                <td style="color:var(--amber)">·</td>
+                                <td style="color:var(--amber)">&amp;&amp; / &amp;</td>
+                                <td>
+                                    <svg viewBox="0 0 80 44" width="60" height="33" style="display:block;margin:auto">
+                                        <!-- input wires -->
+                                        <line x1="4" y1="14" x2="22" y2="14" stroke="#f5b84b" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <line x1="4" y1="30" x2="22" y2="30" stroke="#f5b84b" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <!-- AND body: flat left, rounded right -->
+                                        <path d="M22 8 L22 36 L40 36 Q60 36 60 22 Q60 8 40 8 Z" fill="none"
+                                            stroke="#f5b84b" stroke-width="1.5" stroke-linejoin="round" />
+                                        <!-- output wire -->
+                                        <line x1="60" y1="22" x2="76" y2="22" stroke="#f5b84b" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                </td>
+                            </tr>
+                            <!-- OR -->
+                            <tr>
+                                <td class="op-name">OR</td>
+                                <td style="color:var(--coral)">+</td>
+                                <td style="color:var(--coral)">|| / |</td>
+                                <td>
+                                    <svg viewBox="0 0 80 44" width="60" height="33" style="display:block;margin:auto">
+                                        <!-- input wires -->
+                                        <line x1="4" y1="14" x2="22" y2="14" stroke="#f07167" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <line x1="4" y1="30" x2="22" y2="30" stroke="#f07167" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <!-- OR body: curved back, pointed right -->
+                                        <path d="M18 8 Q30 8 58 22 Q30 36 18 36 Q28 22 18 8 Z" fill="none"
+                                            stroke="#f07167" stroke-width="1.5" stroke-linejoin="round" />
+                                        <!-- output wire -->
+                                        <line x1="58" y1="22" x2="76" y2="22" stroke="#f07167" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                </td>
+                            </tr>
+                            <!-- NOT -->
+                            <tr>
+                                <td class="op-name">NOT</td>
+                                <td style="color:#a78bfa">Ā / A′</td>
+                                <td style="color:#a78bfa">! / ~</td>
+                                <td>
+                                    <svg viewBox="0 0 80 44" width="60" height="33" style="display:block;margin:auto">
+                                        <!-- input wire -->
+                                        <line x1="4" y1="22" x2="20" y2="22" stroke="#a78bfa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <!-- triangle body -->
+                                        <polygon points="20,8 20,36 56,22" fill="none" stroke="#a78bfa"
+                                            stroke-width="1.5" stroke-linejoin="round" />
+                                        <!-- bubble -->
+                                        <circle cx="60" cy="22" r="4" fill="none" stroke="#a78bfa" stroke-width="1.5" />
+                                        <!-- output wire -->
+                                        <line x1="64" y1="22" x2="76" y2="22" stroke="#a78bfa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                </td>
+                            </tr>
+                            <!-- XOR -->
+                            <tr>
+                                <td class="op-name">XOR</td>
+                                <td style="color:#60a5fa">⊕</td>
+                                <td style="color:#60a5fa">^</td>
+                                <td>
+                                    <svg viewBox="0 0 80 44" width="60" height="33" style="display:block;margin:auto">
+                                        <!-- input wires -->
+                                        <line x1="4" y1="14" x2="24" y2="14" stroke="#60a5fa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <line x1="4" y1="30" x2="24" y2="30" stroke="#60a5fa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <!-- extra curved back line -->
+                                        <path d="M14 8 Q24 22 14 36" fill="none" stroke="#60a5fa" stroke-width="1.5" />
+                                        <!-- OR body -->
+                                        <path d="M20 8 Q32 8 58 22 Q32 36 20 36 Q30 22 20 8 Z" fill="none"
+                                            stroke="#60a5fa" stroke-width="1.5" stroke-linejoin="round" />
+                                        <!-- output wire -->
+                                        <line x1="58" y1="22" x2="76" y2="22" stroke="#60a5fa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                </td>
+                            </tr>
+                            <!-- XNOR -->
+                            <tr>
+                                <td class="op-name">XNOR</td>
+                                <td style="color:#60a5fa">⊙</td>
+                                <td style="color:#60a5fa">!(a^b)</td>
+                                <td>
+                                    <svg viewBox="0 0 80 44" width="60" height="33" style="display:block;margin:auto">
+                                        <!-- input wires -->
+                                        <line x1="4" y1="14" x2="24" y2="14" stroke="#60a5fa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <line x1="4" y1="30" x2="24" y2="30" stroke="#60a5fa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <!-- extra curved back line -->
+                                        <path d="M14 8 Q24 22 14 36" fill="none" stroke="#60a5fa" stroke-width="1.5" />
+                                        <!-- OR body -->
+                                        <path d="M20 8 Q32 8 54 22 Q32 36 20 36 Q30 22 20 8 Z" fill="none"
+                                            stroke="#60a5fa" stroke-width="1.5" stroke-linejoin="round" />
+                                        <!-- bubble -->
+                                        <circle cx="58" cy="22" r="4" fill="none" stroke="#60a5fa" stroke-width="1.5" />
+                                        <!-- output wire -->
+                                        <line x1="62" y1="22" x2="76" y2="22" stroke="#60a5fa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                </td>′
+                            </tr>
+                            <!-- NAND -->
+                            <tr>
+                                <td class="op-name">NAND</td>
+                                <td style="color:#a78bfa">(a·b)′</td>
+                                <td style="color:#a78bfa">!(a&amp;b)</td>
+                                <td>
+                                    <svg viewBox="0 0 80 44" width="80" height="33" style="display:block;margin:auto">
+                                        <!-- input wires -->
+                                        <line x1="4" y1="14" x2="22" y2="14" stroke="#a78bfa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <line x1="4" y1="30" x2="22" y2="30" stroke="#a78bfa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <!-- AND body -->
+                                        <path d="M22 8 L22 36 L38 36 Q56 36 56 22 Q56 8 38 8 Z" fill="none"
+                                            stroke="#a78bfa" stroke-width="1.5" stroke-linejoin="round" />
+                                        <!-- bubble -->
+                                        <circle cx="60" cy="22" r="4" fill="none" stroke="#a78bfa" stroke-width="1.5" />
+                                        <!-- output wire -->
+                                        <line x1="64" y1="22" x2="76" y2="22" stroke="#a78bfa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                </td>
+                            </tr>
+                            <!-- NOR -->
+                            <tr>
+                                <td class="op-name">NOR</td>
+                                <td style="color:#a78bfa">(a+b)′</td>
+                                <td style="color:#a78bfa">!(a|b)</td>
+                                <td>
+                                    <svg viewBox="0 0 80 44" width="60" height="33" style="display:block;margin:auto">
+                                        <!-- input wires -->
+                                        <line x1="4" y1="14" x2="22" y2="14" stroke="#a78bfa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <line x1="4" y1="30" x2="22" y2="30" stroke="#a78bfa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <!-- OR body -->
+                                        <path d="M18 8 Q30 8 54 22 Q30 36 18 36 Q28 22 18 8 Z" fill="none"
+                                            stroke="#a78bfa" stroke-width="1.5" stroke-linejoin="round" />
+                                        <!-- bubble -->
+                                        <circle cx="58" cy="22" r="4" fill="none" stroke="#a78bfa" stroke-width="1.5" />
+                                        <!-- output wire -->
+                                        <line x1="62" y1="22" x2="76" y2="22" stroke="#a78bfa" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-coral"></span>Operator Precedence</div>
+                    <div class="precedence-list">
+                        <div class="prec-row">
+                            <span class="prec-rank">1st</span>
+                            <span class="prec-op violet">NOT ( A′ )</span>
+                            <span class="prec-desc">Highest — evaluated first</span>
+                        </div>
+                        <div class="prec-row">
+                            <span class="prec-rank">2nd</span>
+                            <span class="prec-op amber">AND ( · )</span>
+                            <span class="prec-desc">Like multiplication</span>
+                        </div>
+                        <div class="prec-row">
+                            <span class="prec-rank">3rd</span>
+                            <span class="prec-op blue">XOR ( ⊕ )</span>
+                            <span class="prec-desc">After AND, before OR</span>
+                        </div>
+                        <div class="prec-row">
+                            <span class="prec-rank">4th</span>
+                            <span class="prec-op coral">OR ( + )</span>
+                            <span class="prec-desc">Lowest — like addition</span>
+                        </div>
+                        <div class="prec-row"
+                            style="background:rgba(25,198,179,0.06); border-color:rgba(94,234,212,0.2)">
+                            <span class="prec-rank">( )</span>
+                            <span class="prec-op accent">Parentheses</span>
+                            <span class="prec-desc">Override any precedence</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><span class="card-title-dot dot-accent"></span>Quick Facts</div>
+                    <div class="law-list">
+                        <div class="law-row">
+                            <span class="law-name">Universal gates</span>
+                            <span class="law-expr" style="font-size:0.8rem"><span style="color:#a78bfa">NAND</span>,
+                                <span style="color:#a78bfa">NOR</span></span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">AND gate</span>
+                            <span class="law-expr" style="font-size:0.8rem">3 NAND gates</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">OR gate</span>
+                            <span class="law-expr" style="font-size:0.8rem">3 NOR gates</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">XOR from NAND</span>
+                            <span class="law-expr" style="font-size:0.8rem">4 NAND gates</span>
+                        </div>
+                        <div class="law-row">
+                            <span class="law-name">n-var minterms</span>
+                            <span class="law-expr">2ⁿ total</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Tab switching
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabPanels.forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // K-Map toggle
+        document.querySelectorAll('.kmap-table td[data-idx]').forEach(cell => {
+            cell.addEventListener('click', () => {
+                const isOne = cell.textContent.trim() === '1';
+                cell.textContent = isOne ? '0' : '1';
+                cell.classList.toggle('v1', !isOne);
+                cell.classList.toggle('v0', isOne);
+            });
+        });
+    </script>
+
+</body>
+
+</html>
