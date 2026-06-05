@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minterm &amp; Maxterm Calculator</title>
+    <link rel="stylesheet" href="assets/css/minterm-maxterm.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a class="back-btn" href="index.html" aria-label="Back to home" title="Back to home">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h12" />
+                </svg>
+            </a>
+            <div>
+                <h1>Minterm &amp; Maxterm Calculator</h1>
+                <p class="subtitle">Create canonical SOP and POS expressions from truth-table indexes</p>
+            </div>
+            <div class="status-line" id="statusLine">
+                <span class="status-dot"></span>
+                <span id="statusText">Ready</span>
+            </div>
+        </header>
+
+        <main class="workspace">
+            <section class="panel controls-panel">
+                <label for="variableCount">
+                    <span>Variables</span>
+                    <span id="rangeText">0 to 7</span>
+                </label>
+                <div class="control-grid">
+                    <select id="variableCount" aria-label="Number of variables">
+                        <option value="1">1 variable</option>
+                        <option value="2">2 variables</option>
+                        <option value="3" selected>3 variables</option>
+                        <option value="4">4 variables</option>
+                        <option value="5">5 variables</option>
+                        <option value="6">6 variables</option>
+                    </select>
+                    <input type="text" id="variableNames" value="A, B, C" autocomplete="off"
+                        aria-label="Variable names">
+                </div>
+
+                <label class="mode-label">
+                    <span>Quick Fill</span>
+                    <span>Paint table rows</span>
+                </label>
+                <div class="mode-toggle" role="group" aria-label="Input type">
+                    <button class="mode-btn active" type="button" data-mode="minterm">Set 1 Rows</button>
+                    <button class="mode-btn" type="button" data-mode="maxterm">Set 0 Rows</button>
+                </div>
+
+                <label for="termIndexes">
+                    <span id="termLabel">Minterm Indexes</span>
+                    <span>Comma, space, or ranges</span>
+                </label>
+                <textarea id="termIndexes" rows="4" placeholder="0, 2, 5-7" autocomplete="off"></textarea>
+
+                <div class="action-row">
+                    <button class="action-btn" type="button" id="generateBtn">Apply Indexes</button>
+                    <button class="action-btn secondary" type="button" id="clearBtn">Clear Table</button>
+                </div>
+
+                <div class="hint-box">
+                    Click the F column in the truth table to toggle each row. The index box is only a fast way to set
+                    multiple rows.
+                </div>
+            </section>
+
+            <section class="panel results-panel">
+                <div class="summary">
+                    <span class="summary-title">Canonical Forms</span>
+                    <span class="summary-value" id="summaryValue">Waiting for input</span>
+                </div>
+
+                <div class="result-grid">
+                    <article class="result-card">
+                        <span class="result-label">Minterm Notation</span>
+                        <div class="result-value" id="mintermNotation">-</div>
+                    </article>
+                    <article class="result-card">
+                        <span class="result-label">Maxterm Notation</span>
+                        <div class="result-value" id="maxtermNotation">-</div>
+                    </article>
+                    <article class="result-card wide">
+                        <span class="result-label">Canonical SOP</span>
+                        <div class="result-value expression" id="sopExpression">-</div>
+                    </article>
+                    <article class="result-card wide">
+                        <span class="result-label">Canonical POS</span>
+                        <div class="result-value expression" id="posExpression">-</div>
+                    </article>
+                </div>
+
+                <div class="table-wrap" id="tableHost">
+                    <div class="empty-state">Build the truth table to calculate canonical forms.</div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="assets/js/minterm-maxterm.js"></script>
+</body>
+
+</html>
